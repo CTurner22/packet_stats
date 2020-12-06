@@ -42,6 +42,8 @@ void pk_processor(u_char *user, const struct pcap_pkthdr *pkthdr, const u_char *
 	} else {
 		// IEEE 802.3
 		results->newOtherLink(pkthdr->len);
+
+		// Didnt think this should be done for other Links, but Promig solution appears to
 		results->newSrcMac(std::vector<unsigned char>(eth_hdr->h_source, eth_hdr->h_source + ETH_ALEN));
 		results->newDstMac(std::vector<unsigned char>(eth_hdr->h_dest, eth_hdr->h_dest + ETH_ALEN));
 		return;
@@ -110,15 +112,15 @@ void pk_processor(u_char *user, const struct pcap_pkthdr *pkthdr, const u_char *
 		}
 		case IPPROTO_UDP: {
 			auto udp_hdr = reinterpret_cast<const struct udphdr*>(packet + sizeof(ethhdr) + sizeof(ip));
-			results->newSrcUDP(udp_hdr->source);
-			results->newDstUDP(udp_hdr->dest);
+			results->newSrcUDP(ntohs(udp_hdr->source));
+			results->newDstUDP(ntohs(udp_hdr->dest));
 			results->newUDP(pkthdr->len);
 			return;
 		}
 		case IPPROTO_TCP: {
 			auto tcp_hdr = reinterpret_cast<const struct tcphdr*>(packet + sizeof(ethhdr) + sizeof(ip));
-			results->newSrcTCP(tcp_hdr->source);
-			results->newDstTCP(tcp_hdr->dest);
+			results->newSrcTCP(ntohs(tcp_hdr->source));
+			results->newDstTCP(ntohs(tcp_hdr->dest));
 			results->newTCP(pkthdr->len);
 
 			if (tcp_hdr->fin)
