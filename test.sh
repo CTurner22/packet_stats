@@ -1,6 +1,8 @@
+echo Beginning tests
+
 for mode in m a t u
 do
-    for file in ./testfiles/*; do
+    for file in /u/wy/ys/promig3/pub/sampleCaptureFiles/*; do
         if [ -f "$file" ]; then
             echo testing file $file
             ./packetstats -f $file -$mode > output.txt
