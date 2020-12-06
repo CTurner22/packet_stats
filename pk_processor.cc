@@ -42,6 +42,8 @@ void pk_processor(u_char *user, const struct pcap_pkthdr *pkthdr, const u_char *
 	} else {
 		// IEEE 802.3
 		results->newOtherLink(pkthdr->len);
+		results->newSrcMac(std::vector<unsigned char>(eth_hdr->h_source, eth_hdr->h_source + ETH_ALEN));
+		results->newDstMac(std::vector<unsigned char>(eth_hdr->h_dest, eth_hdr->h_dest + ETH_ALEN));
 		return;
 	}		
 
