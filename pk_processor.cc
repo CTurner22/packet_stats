@@ -34,7 +34,7 @@ void pk_processor(u_char *user, const struct pcap_pkthdr *pkthdr, const u_char *
 	// * If it's not an ethernet packet, count is as "other" and your done
 	// * with this packet.
 	// *******************************************************************
-	if (eth_hdr->h_proto > 1536) {
+	if (ntohs(eth_hdr->h_proto) > 1536) {
 		results->newEthernet(pkthdr->len);
 		results->newSrcMac(std::vector<unsigned char>(eth_hdr->h_source, eth_hdr->h_source + ETH_ALEN));
 		results->newDstMac(std::vector<unsigned char>(eth_hdr->h_dest, eth_hdr->h_dest + ETH_ALEN));
@@ -59,7 +59,8 @@ void pk_processor(u_char *user, const struct pcap_pkthdr *pkthdr, const u_char *
 	// * If it's not ARP, IPv4 or IPv6 count it as otherNetwork.
 	// *******************************************************************
 
-	switch (eth_hdr->h_proto) {
+	switch (ntohs(eth_hdr->h_proto)) {
+
 		case ETH_P_ARP:
 			results->newARP(pkthdr->len);
 			return;
